@@ -853,6 +853,44 @@ document.querySelectorAll(".faq__item").forEach((item) => {
 });
 
 /* ------------------------------------------------------------
+   GTM dataLayer — conversion & engagement events
+------------------------------------------------------------ */
+function pushToDataLayer(payload) {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push(payload);
+}
+
+function getCtaLocation(el) {
+  if (el.closest(".hero")) return "hero";
+  if (el.closest(".cta")) return "cta_section";
+  if (el.closest(".nav")) return "nav";
+  if (el.closest(".menu")) return "mobile_menu";
+  return "unknown";
+}
+
+/* Secondary engagement events (mark as Secondary in Google Ads) */
+document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"]').forEach((link) => {
+  link.addEventListener("click", () => {
+    pushToDataLayer({
+      event: "contact_click",
+      contact_type: link.href.startsWith("mailto:") ? "email" : "phone",
+      link_url: link.getAttribute("href"),
+    });
+  });
+});
+
+document.querySelectorAll('a[href="#contact"]').forEach((link) => {
+  if (!link.classList.contains("btn")) return;
+  link.addEventListener("click", () => {
+    pushToDataLayer({
+      event: "cta_click",
+      cta_location: getCtaLocation(link),
+      cta_text: (link.textContent || "").trim(),
+    });
+  });
+});
+
+/* ------------------------------------------------------------
    Contact form → Google Forms
    Setup:
    1. Create a Google Form with Name, Email, Company, Message fields
@@ -916,12 +954,11 @@ if (contactForm) {
 
     try {
       await submitToGoogleForm(data);
-      if (window.dataLayer) {
-        window.dataLayer.push({
-          event: "contact_form_submit",
-          form_email: data.email,
-        });
-      }
+      pushToDataLayer({
+        event: "contact_form_submit",
+        form_location: "contact_section",
+        user_data: { email: data.email, name: data.name },
+      });
       contactForm.hidden = true;
       formSuccess.hidden = false;
     } catch (err) {
@@ -980,6 +1017,20 @@ if (document.getElementById("cal-embed")) {
       light: { "cal-brand": accentHex() },
     },
     hideEventTypeDetails: false,
+  });
+
+  Cal.ns.contact("on", {
+    action: "bookingSuccessfulV2",
+    callback: (e) => {
+      const b = (e && e.detail && e.detail.data) || {};
+      pushToDataLayer({
+        event: "book_call_success",
+        booking_uid: b.uid,
+        booking_title: b.title,
+        event_type_id: b.eventTypeId,
+        booking_status: b.status,
+      });
+    },
   });
 }
 
