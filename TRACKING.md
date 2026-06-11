@@ -3,6 +3,7 @@
 This site sends conversion and engagement events to **Google Tag Manager** via `dataLayer`. GTM routes them to **GA4** and **Google Ads**. No GA4 or Ads IDs are hardcoded in the repo — everything is configured in the Google UIs.
 
 **GTM container:** `GTM-M732SMQL`  
+**GA4 Measurement ID (gtag.js in `index.html`):** `G-E10LNZV0VS`  
 **Consent:** Cookiebot + Google Consent Mode v2 (loads before GTM in `index.html`)  
 **Code:** event pushes live in `main.js` (merged via [PR #11](https://github.com/tasnadimark/website-testing/pull/11))
 
@@ -57,7 +58,7 @@ Book-audit CTA click ──► cta_click             ──┘
 - [ ] Property name: e.g. `OTTO / Automatizalas AI`
 - [ ] Set timezone and currency (Hungary / HUF if targeting HU)
 - [ ] Create a **Web** data stream for your live domain
-- [ ] Copy the **Measurement ID** (`G-XXXXXXXXXX`) — you need this for GTM
+- [ ] Copy the **Measurement ID** (`G-E10LNZV0VS`) — already installed via gtag.js in `index.html`; only add a **Google Tag** in GTM if you want GTM-managed GA4 as well (avoid duplicate pageviews)
 
 ### Mark key events in GA4 (after GTM is live)
 
