@@ -220,7 +220,7 @@ const I18N = {
   },
 };
 
-let currentLang = localStorage.getItem("otto-lang") === "hu" ? "hu" : "en";
+let currentLang = localStorage.getItem("otto-lang") || "hu";
 
 /* wrap hero/cta title lines for masked reveal — moves data-i18n onto the
    inner span so language swaps don't destroy the wrapper */
