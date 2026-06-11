@@ -25,7 +25,7 @@ if (!prefersReducedMotion && !isTouch && typeof Lenis !== "undefined") {
 ------------------------------------------------------------ */
 const I18N = {
   en: {
-    "meta.title": "OTTO® — AI Automation Studio for Small & Medium Business",
+    "meta.title": "AI Automation for SMBs | OTTO® — automatizalas.ai",
     "meta.desc": "OTTO designs and ships AI automations that erase repetitive work for small and medium businesses — in weeks, not quarters.",
     "nav.services": "Services",
     "nav.process": "Process",
@@ -135,7 +135,7 @@ const I18N = {
     "footer.terms": "Terms",
   },
   hu: {
-    "meta.title": "OTTO® — AI-automatizálási stúdió kis- és középvállalkozásoknak",
+    "meta.title": "AI-automatizálás KKV-knak | OTTO® — automatizalas.ai",
     "meta.desc": "Az OTTO olyan AI-automatizációkat tervez és szállít, amelyek eltüntetik az ismétlődő munkát a kis- és középvállalkozásoknál — hetek, nem negyedévek alatt.",
     "nav.services": "Szolgáltatások",
     "nav.process": "Folyamat",
@@ -246,7 +246,11 @@ const I18N = {
   },
 };
 
-let currentLang = localStorage.getItem("otto-lang") || "hu";
+/* Language is determined by URL: / is Hungarian, /en/ is English.
+   Each URL serves statically baked content (scripts/build-i18n.js); the
+   runtime applyLang pass keeps dynamic pieces (counters, statement split,
+   marquee) consistent with it. */
+let currentLang = location.pathname.startsWith("/en") ? "en" : "hu";
 
 /* wrap hero/cta title lines for masked reveal — moves data-i18n onto the
    inner span so language swaps don't destroy the wrapper */
@@ -316,7 +320,6 @@ function formatCounter(value, decimals, suffix) {
 
 function applyLang(lang) {
   currentLang = lang;
-  localStorage.setItem("otto-lang", lang);
   document.documentElement.lang = lang;
 
   const dict = I18N[lang];
@@ -355,9 +358,12 @@ function applyLang(lang) {
   ScrollTrigger.refresh();
 }
 
+/* The toggle navigates to the other language's URL so each language keeps
+   its own indexable page (SEO: hreflang pair). */
 document.querySelectorAll(".lang__btn").forEach((btn) => {
   btn.addEventListener("click", () => {
-    if (btn.dataset.lang !== currentLang) applyLang(btn.dataset.lang);
+    if (btn.dataset.lang === currentLang) return;
+    location.href = btn.dataset.lang === "en" ? "/en/" : "/";
   });
 });
 
