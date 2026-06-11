@@ -936,7 +936,7 @@ if (contactForm) {
 /* ------------------------------------------------------------
    Cal.com inline embed
 ------------------------------------------------------------ */
-const CAL_LINK = "otto-studio/intro"; // TODO: replace with the real cal.com link
+const CAL_LINK = "mark-tasnadi-rqaerj";
 if (document.getElementById("cal-embed")) {
   /* official Cal.com embed loader */
   (function (C, A, L) {
