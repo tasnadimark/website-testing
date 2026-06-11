@@ -135,13 +135,15 @@ Create conversion actions in Google Ads first (Step 3), then:
 
 - [ ] **Google Ads - Lead form**
   - Tag type: **Google Ads Conversion Tracking**
-  - Conversion ID + Label: from Ads (Step 3)
+  - Conversion ID: `18231330597`
+  - Conversion Label: `3bc1CI_GoL0cEKWOsPVD`
   - Trigger: **CE - contact_form_submit**
   - Enable **Enhanced conversions** → map email to **DL - user email**
 
 - [ ] **Google Ads - Call booking**
   - Tag type: **Google Ads Conversion Tracking**
-  - Conversion ID + Label: from Ads (Step 3)
+  - Conversion ID: `18231330597`
+  - Conversion Label: `gKZrCNu0pL0cEKWOsPVD`
   - Trigger: **CE - book_call_success**
 
 #### Optional secondary tags (observation only)
