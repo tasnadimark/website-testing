@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #0b0b0e; overflow: hidden; font-family: "Space Grotesk", sans-serif; }
+  .board { display: none; position: relative; background: #0b0b0e; }
+  .board.active { display: block; }
+  #landscape { width: 1200px; height: 628px; }
+  #square { width: 1200px; height: 1200px; }
+  svg { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ============ LANDSCAPE 1200x628 ============ -->
+<div class="board" id="landscape">
+<svg viewBox="0 0 1200 628" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="rgba(237,237,230,0.06)"/>
+    </pattern>
+    <radialGradient id="glow" cx="50%" cy="100%" r="80%">
+      <stop offset="0%" stop-color="rgba(215,255,63,0.10)"/>
+      <stop offset="60%" stop-color="rgba(215,255,63,0)"/>
+    </radialGradient>
+    <linearGradient id="flow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(215,255,63,0.25)"/>
+      <stop offset="100%" stop-color="#d7ff3f"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="628" fill="#0b0b0e"/>
+  <rect width="1200" height="628" fill="url(#dots)"/>
+  <rect width="1200" height="628" fill="url(#glow)"/>
+
+  <!-- wordmark -->
+  <text x="72" y="92" font-family="Space Grotesk" font-weight="700" font-size="46" letter-spacing="-1.5" fill="#edede6">OTTO<tspan dy="-16" font-size="20" fill="#d7ff3f">®</tspan></text>
+
+  <!-- connectors -->
+  <g fill="none" stroke="url(#flow)" stroke-width="2.5">
+    <path d="M170,160 C320,160 380,290 510,308"/>
+    <path d="M170,314 L502,314"/>
+    <path d="M170,468 C320,468 380,338 510,320"/>
+  </g>
+  <line x1="688" y1="314" x2="946" y2="314" stroke="#d7ff3f" stroke-width="2.5"/>
+
+  <!-- data packets -->
+  <g fill="#d7ff3f">
+    <circle cx="300" cy="187" r="5"/>
+    <circle cx="360" cy="314" r="5"/>
+    <circle cx="330" cy="430" r="5"/>
+    <circle cx="780" cy="314" r="5"/>
+    <circle cx="860" cy="314" r="5"/>
+  </g>
+
+  <!-- source nodes -->
+  <g>
+    <rect x="72" y="112" width="96" height="96" rx="20" fill="#15151a" stroke="rgba(237,237,230,0.16)"/>
+    <g transform="translate(100,142)" fill="none" stroke="#d7ff3f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="0" y="4" width="40" height="28" rx="4"/>
+      <path d="M2,7 L20,20 L38,7"/>
+    </g>
+
+    <rect x="72" y="266" width="96" height="96" rx="20" fill="#15151a" stroke="rgba(237,237,230,0.16)"/>
+    <g transform="translate(104,294)" fill="none" stroke="#d7ff3f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0,4 a4,4 0 0 1 4,-4 h20 l8,8 v28 a4,4 0 0 1 -4,4 h-24 a4,4 0 0 1 -4,-4 z"/>
+      <path d="M24,0 v8 h8"/>
+      <line x1="7" y1="16" x2="25" y2="16"/>
+      <line x1="7" y1="23" x2="25" y2="23"/>
+    </g>
+
+    <rect x="72" y="420" width="96" height="96" rx="20" fill="#15151a" stroke="rgba(237,237,230,0.16)"/>
+    <g transform="translate(100,448)" fill="none" stroke="#d7ff3f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4,0 h32 a4,4 0 0 1 4,4 v18 a4,4 0 0 1 -4,4 h-16 l-10,10 v-10 h-6 a4,4 0 0 1 -4,-4 v-18 a4,4 0 0 1 4,-4 z"/>
+    </g>
+  </g>
+
+  <!-- center ring -->
+  <circle cx="600" cy="314" r="84" fill="none" stroke="rgba(215,255,63,0.15)" stroke-width="30"/>
+  <circle cx="600" cy="314" r="84" fill="none" stroke="#d7ff3f" stroke-width="15"/>
+
+  <!-- output node -->
+  <rect x="950" y="254" width="120" height="120" rx="26" fill="#d7ff3f"/>
+  <path d="M986,316 L1004,334 L1036,296" fill="none" stroke="#0b0b0e" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- tagline -->
+  <text x="72" y="586" font-family="Space Grotesk" font-weight="500" font-size="27" fill="#8a8a93">A monoton munka <tspan fill="#d7ff3f">automatizálva.</tspan></text>
+</svg>
+</div>
+
+<!-- ============ SQUARE 1200x1200 ============ -->
+<div class="board" id="square">
+<svg viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="dots2" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="rgba(237,237,230,0.06)"/>
+    </pattern>
+    <radialGradient id="glow2" cx="50%" cy="100%" r="75%">
+      <stop offset="0%" stop-color="rgba(215,255,63,0.10)"/>
+      <stop offset="60%" stop-color="rgba(215,255,63,0)"/>
+    </radialGradient>
+    <linearGradient id="flow2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(215,255,63,0.25)"/>
+      <stop offset="100%" stop-color="#d7ff3f"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="1200" fill="#0b0b0e"/>
+  <rect width="1200" height="1200" fill="url(#dots2)"/>
+  <rect width="1200" height="1200" fill="url(#glow2)"/>
+
+  <!-- wordmark -->
+  <text x="80" y="116" font-family="Space Grotesk" font-weight="700" font-size="54" letter-spacing="-1.5" fill="#edede6">OTTO<tspan dy="-19" font-size="23" fill="#d7ff3f">®</tspan></text>
+
+  <!-- connectors -->
+  <g fill="none" stroke="url(#flow2)" stroke-width="2.5">
+    <path d="M300,372 C300,470 480,520 528,560"/>
+    <path d="M600,372 L600,528"/>
+    <path d="M900,372 C900,470 720,520 672,560"/>
+  </g>
+  <line x1="600" y1="752" x2="600" y2="918" stroke="#d7ff3f" stroke-width="2.5"/>
+
+  <!-- data packets -->
+  <g fill="#d7ff3f">
+    <circle cx="306" cy="446" r="5.5"/>
+    <circle cx="600" cy="450" r="5.5"/>
+    <circle cx="891" cy="452" r="5.5"/>
+    <circle cx="600" cy="838" r="5.5"/>
+  </g>
+
+  <!-- source nodes -->
+  <g>
+    <rect x="245" y="262" width="110" height="110" rx="24" fill="#15151a" stroke="rgba(237,237,230,0.16)"/>
+    <g transform="translate(277,298)" fill="none" stroke="#d7ff3f" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="0" y="5" width="46" height="32" rx="4"/>
+      <path d="M2,8 L23,24 L44,8"/>
+    </g>
+
+    <rect x="545" y="262" width="110" height="110" rx="24" fill="#15151a" stroke="rgba(237,237,230,0.16)"/>
+    <g transform="translate(582,288)" fill="none" stroke="#d7ff3f" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0,5 a5,5 0 0 1 5,-5 h22 l10,10 v32 a5,5 0 0 1 -5,5 h-27 a5,5 0 0 1 -5,-5 z"/>
+      <path d="M27,0 v10 h10"/>
+      <line x1="8" y1="20" x2="29" y2="20"/>
+      <line x1="8" y1="28" x2="29" y2="28"/>
+    </g>
+
+    <rect x="845" y="262" width="110" height="110" rx="24" fill="#15151a" stroke="rgba(237,237,230,0.16)"/>
+    <g transform="translate(877,296)" fill="none" stroke="#d7ff3f" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5,0 h36 a5,5 0 0 1 5,5 v20 a5,5 0 0 1 -5,5 h-18 l-12,12 v-12 h-6 a5,5 0 0 1 -5,-5 v-20 a5,5 0 0 1 5,-5 z"/>
+    </g>
+  </g>
+
+  <!-- center ring -->
+  <circle cx="600" cy="640" r="95" fill="none" stroke="rgba(215,255,63,0.15)" stroke-width="34"/>
+  <circle cx="600" cy="640" r="95" fill="none" stroke="#d7ff3f" stroke-width="17"/>
+
+  <!-- output node -->
+  <rect x="532" y="922" width="136" height="136" rx="30" fill="#d7ff3f"/>
+  <path d="M572,992 L592,1012 L630,968" fill="none" stroke="#0b0b0e" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- tagline -->
+  <text x="600" y="1148" text-anchor="middle" font-family="Space Grotesk" font-weight="500" font-size="34" fill="#8a8a93">A monoton munka <tspan fill="#d7ff3f">automatizálva.</tspan></text>
+</svg>
+</div>
+
+<script>
+  const v = new URLSearchParams(location.search).get("v") || "landscape";
+  document.getElementById(v).classList.add("active");
+</script>
+</body>
+</html>
