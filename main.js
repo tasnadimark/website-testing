@@ -114,6 +114,17 @@ const I18N = {
     "cta.sub": "Book a free 30-minute audit. We'll show you exactly which hours you can get back — even if you never hire us.",
     "cta.btn": "Book your free audit",
     "cta.note": "No pitch deck. No obligation. Just a map of your hidden hours.",
+    "contact.label": "<span>05</span> — Contact",
+    "contact.title": "Let's find your<br>hidden hours.",
+    "contact.formHead": "Write to us",
+    "contact.calHead": "Or book a call directly",
+    "form.name": "Name",
+    "form.email": "Work email",
+    "form.company": "Company",
+    "form.message": "What should we automate?",
+    "form.send": "Send message",
+    "form.successH": "Message sent.",
+    "form.successP": "Thanks — we'll get back to you within one business day.",
     "footer.contact": "Contact",
     "footer.menu": "Menu",
     "footer.social": "Social",
@@ -211,6 +222,17 @@ const I18N = {
     "cta.sub": "Foglalj egy ingyenes, 30 perces auditot. Pontosan megmutatjuk, mely órákat kaphatod vissza — akkor is, ha sosem szerződsz velünk.",
     "cta.btn": "Foglald le az ingyenes auditod",
     "cta.note": "Semmi pitch deck. Semmi kötelezettség. Csak egy térkép a rejtett óráidról.",
+    "contact.label": "<span>05</span> — Kapcsolat",
+    "contact.title": "Találjuk meg a<br>rejtett óráitokat.",
+    "contact.formHead": "Írj nekünk",
+    "contact.calHead": "Vagy foglalj időpontot rögtön",
+    "form.name": "Név",
+    "form.email": "Munkahelyi e-mail",
+    "form.company": "Cég",
+    "form.message": "Mit automatizáljunk?",
+    "form.send": "Üzenet küldése",
+    "form.successH": "Üzenet elküldve.",
+    "form.successP": "Köszönjük — egy munkanapon belül válaszolunk.",
     "footer.contact": "Kapcsolat",
     "footer.menu": "Menü",
     "footer.social": "Közösségi",
@@ -824,6 +846,78 @@ document.querySelectorAll(".faq__item").forEach((item) => {
       gsap.from(content, { height: 0, opacity: 0, duration: 0.45, ease: "power3.out" });
     }
   });
+});
+
+/* ------------------------------------------------------------
+   Contact form (front-end only for now)
+------------------------------------------------------------ */
+const contactForm = document.getElementById("contactForm");
+if (contactForm) {
+  contactForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (contactForm.website.value) return; // honeypot — silently drop bots
+    // TODO: wire to a real backend (Formspree / own API) — payload is ready:
+    // const data = Object.fromEntries(new FormData(contactForm));
+    if (window.dataLayer) window.dataLayer.push({ event: "contact_form_submit" });
+    contactForm.hidden = true;
+    document.getElementById("formSuccess").hidden = false;
+  });
+}
+
+/* ------------------------------------------------------------
+   Cal.com inline embed
+------------------------------------------------------------ */
+const CAL_LINK = "otto-studio/intro"; // TODO: replace with the real cal.com link
+if (document.getElementById("cal-embed")) {
+  /* official Cal.com embed loader */
+  (function (C, A, L) {
+    let p = function (a, ar) { a.q.push(ar); };
+    let d = C.document;
+    C.Cal = C.Cal || function () {
+      let cal = C.Cal;
+      let ar = arguments;
+      if (!cal.loaded) {
+        cal.ns = {};
+        cal.q = cal.q || [];
+        d.head.appendChild(d.createElement("script")).src = A;
+        cal.loaded = true;
+      }
+      if (ar[0] === L) {
+        const api = function () { p(api, arguments); };
+        const namespace = ar[1];
+        api.q = api.q || [];
+        if (typeof namespace === "string") {
+          cal.ns[namespace] = cal.ns[namespace] || api;
+          p(cal.ns[namespace], ar);
+          p(cal, ["initNamespace", namespace]);
+        } else p(cal, ar);
+        return;
+      }
+      p(cal, ar);
+    };
+  })(window, "https://app.cal.com/embed/embed.js", "init");
+
+  const calTheme = THEMES[document.documentElement.dataset.theme]?.light ? "light" : "dark";
+  Cal("init", "contact", { origin: "https://cal.com" });
+  Cal.ns.contact("inline", {
+    elementOrSelector: "#cal-embed",
+    calLink: CAL_LINK,
+    config: { layout: "month_view", theme: calTheme },
+  });
+  Cal.ns.contact("ui", {
+    theme: calTheme,
+    cssVarsPerTheme: {
+      dark: { "cal-brand": accentHex() },
+      light: { "cal-brand": accentHex() },
+    },
+    hideEventTypeDetails: false,
+  });
+}
+
+/* Contact columns reveal */
+gsap.from(".contact__col", {
+  y: 50, autoAlpha: 0, duration: 0.9, stagger: 0.12, ease: "power3.out",
+  scrollTrigger: { trigger: ".contact__grid", start: "top 85%" },
 });
 
 /* Refresh ScrollTrigger after fonts/layout settle */
