@@ -625,7 +625,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   max-width: 32rem;
   margin: 0 auto 2.5rem;
 }
-.cta__note { margin-top: 1.5rem; font-size: 0.85rem; color: var(--muted); }
+.cta__note { margin-top: 3rem; font-size: 0.85rem; color: var(--muted); }
 
 /* ---------- Footer ---------- */
 .footer {
@@ -668,6 +668,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 /* ---------- Theme panel ---------- */
 .theme-panel {
+  display: none;
   position: fixed;
   right: 1.1rem;
   bottom: calc(1.1rem + env(safe-area-inset-bottom, 0px));
