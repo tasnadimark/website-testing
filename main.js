@@ -862,12 +862,12 @@ document.querySelectorAll(".faq__item").forEach((item) => {
    5. Paste the formResponse URL (ends in /formResponse) into GOOGLE_FORM.action
 ------------------------------------------------------------ */
 const GOOGLE_FORM = {
-  action: "https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse",
+  action: "https://docs.google.com/forms/d/e/1FAIpQLSeV-eC-0zQ8dHazRJ6XUKA2Q4B-3BvaUN423HaZugAhWkwC2Q/formResponse",
   entries: {
-    name: "entry.YOUR_NAME_FIELD",
-    email: "entry.YOUR_EMAIL_FIELD",
-    company: "entry.YOUR_COMPANY_FIELD",
-    message: "entry.YOUR_MESSAGE_FIELD",
+    name: "entry.548348004",
+    email: "entry.803460232",
+    company: "entry.937920678",
+    message: "entry.1463795472",
   },
 };
 
