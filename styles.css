@@ -755,6 +755,14 @@ body, .marquee, .results, .menu {
 }
 .form-field--grow textarea { flex: 1; resize: vertical; min-height: 120px; }
 .contact-form .btn { align-self: flex-start; margin-top: 0.35rem; }
+.contact-form .btn:disabled { opacity: 0.65; cursor: not-allowed; }
+.form-error {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #ff6b6b;
+  max-width: 28rem;
+}
+.form-error[hidden] { display: none; }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .form-success {
   flex: 1;
