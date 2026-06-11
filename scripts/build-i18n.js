@@ -39,7 +39,7 @@ const stripTags = (s) => s.replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").trim(
 const escAttr = (s) => stripTags(s).replace(/"/g, "&quot;");
 
 function jsonLd(lang, dict, canonical) {
-  const faq = [1, 2, 3, 4, 5].map((i) => ({
+  const faq = [1, 2, 3, 4, 5, 6].map((i) => ({
     "@type": "Question",
     name: stripTags(dict[`faq.q${i}`]),
     acceptedAnswer: { "@type": "Answer", text: stripTags(dict[`faq.a${i}`]) },
