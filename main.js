@@ -336,6 +336,40 @@ document.querySelectorAll(".lang__btn").forEach((btn) => {
 });
 
 /* ------------------------------------------------------------
+   Color themes
+------------------------------------------------------------ */
+const THEMES = {
+  volt: {},
+  ember: {},
+  orchid: {},
+  paper: { light: true },
+};
+let heroSetAccent = null; // assigned by initHero once WebGL is up
+
+function hexToRgb01(hex) {
+  const c = parseInt(hex.replace("#", ""), 16);
+  return [((c >> 16) & 255) / 255, ((c >> 8) & 255) / 255, (c & 255) / 255];
+}
+function accentHex() {
+  return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+}
+
+function applyTheme(name) {
+  if (!THEMES[name]) name = "volt";
+  document.documentElement.dataset.theme = name;
+  localStorage.setItem("otto-theme", name);
+  document.querySelectorAll(".theme-dot").forEach((d) => {
+    d.classList.toggle("is-active", d.dataset.theme === name);
+  });
+  if (heroSetAccent) heroSetAccent(accentHex(), !!THEMES[name].light);
+}
+
+document.querySelectorAll(".theme-dot").forEach((d) => {
+  d.addEventListener("click", () => applyTheme(d.dataset.theme));
+});
+applyTheme(localStorage.getItem("otto-theme") || "volt");
+
+/* ------------------------------------------------------------
    Anchor links work with Lenis
 ------------------------------------------------------------ */
 document.querySelectorAll('a[href^="#"]').forEach((a) => {
@@ -395,13 +429,16 @@ async function initHero() {
       uTime: { value: 0 },
       uMouse: { value: new THREE.Vector2(0, 0) },
       uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+      uColor: { value: new THREE.Vector3(...hexToRgb01(accentHex())) },
     };
+    const themeIsLight = () => !!THEMES[document.documentElement.dataset.theme]?.light;
 
     const material = new THREE.ShaderMaterial({
       uniforms,
       transparent: true,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      // additive glow on dark themes washes out on light backgrounds
+      blending: themeIsLight() ? THREE.NormalBlending : THREE.AdditiveBlending,
       vertexShader: /* glsl */ `
         uniform float uTime;
         uniform vec2 uMouse;
@@ -434,6 +471,7 @@ async function initHero() {
         }
       `,
       fragmentShader: /* glsl */ `
+        uniform vec3 uColor;
         varying float vElev;
         varying float vDist;
 
@@ -445,14 +483,19 @@ async function initHero() {
           // fade with distance
           alpha *= smoothstep(22.0, 6.0, vDist);
 
-          vec3 lime = vec3(0.843, 1.0, 0.247);
-          vec3 dim  = vec3(0.32, 0.36, 0.30);
-          vec3 col = mix(dim, lime, smoothstep(-0.6, 1.1, vElev));
+          vec3 dim = uColor * 0.30 + vec3(0.12);
+          vec3 col = mix(dim, uColor, smoothstep(-0.6, 1.1, vElev));
 
           gl_FragColor = vec4(col, alpha * 0.85);
         }
       `,
     });
+
+    heroSetAccent = (hex, light) => {
+      uniforms.uColor.value.set(...hexToRgb01(hex));
+      material.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
+      material.needsUpdate = true;
+    };
 
     const points = new THREE.Points(geometry, material);
     points.rotation.x = -0.12;
