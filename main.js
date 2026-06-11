@@ -129,6 +129,7 @@ const I18N = {
     "form.error": "Something went wrong. Please try again or email mark@automatizalas.ai.",
     "form.successH": "Message sent.",
     "form.successP": "Thanks — we'll get back to you within one business day.",
+    "fab.label": "Free audit",
     "footer.contact": "Contact",
     "footer.menu": "Menu",
     "footer.social": "Social",
@@ -241,6 +242,7 @@ const I18N = {
     "form.error": "Valami hiba történt. Próbáld újra, vagy írj a mark@automatizalas.ai címre.",
     "form.successH": "Üzenet elküldve.",
     "form.successP": "Köszönjük — egy munkanapon belül válaszolunk.",
+    "fab.label": "Ingyenes audit",
     "footer.contact": "Kapcsolat",
     "footer.menu": "Menü",
     "footer.social": "Közösségi",
@@ -675,16 +677,13 @@ if (!isTouch && !prefersReducedMotion) {
    Nav: hide on scroll down, glass on scroll
 ------------------------------------------------------------ */
 const nav = document.getElementById("nav");
-let lastY = 0;
+/* Nav stays visible while scrolling (only the glass shrink applies) — hiding
+   it on scroll-down removed the page's main CTA exactly while people read. */
 ScrollTrigger.create({
   start: 0,
   end: "max",
   onUpdate: (self) => {
-    const y = self.scroll();
-    nav.classList.toggle("is-scrolled", y > 40);
-    if (y > 500 && y > lastY && !menuOpen) nav.classList.add("is-hidden");
-    else nav.classList.remove("is-hidden");
-    lastY = y;
+    nav.classList.toggle("is-scrolled", self.scroll() > 40);
   },
 });
 
@@ -1049,6 +1048,39 @@ gsap.from(".contact__col", {
   y: 50, autoAlpha: 0, duration: 0.9, stagger: 0.12, ease: "power3.out",
   scrollTrigger: { trigger: ".contact__grid", start: "top 85%" },
 });
+
+/* ------------------------------------------------------------
+   Floating CTA: appears after the hero, hides at contact/footer
+------------------------------------------------------------ */
+const fab = document.getElementById("fab");
+if (fab && "IntersectionObserver" in window) {
+  let pastHero = false;
+  const endsInView = new Map();
+  const update = () => {
+    const nearEnd = [...endsInView.values()].some(Boolean);
+    fab.classList.toggle("is-visible", pastHero && !nearEnd);
+  };
+
+  const hero = document.getElementById("hero");
+  if (hero) {
+    new IntersectionObserver(([e]) => {
+      pastHero = !e.isIntersecting;
+      update();
+    }).observe(hero);
+  }
+
+  const endObserver = new IntersectionObserver((entries) => {
+    entries.forEach((e) => endsInView.set(e.target, e.isIntersecting));
+    update();
+  });
+  [document.getElementById("contact"), document.querySelector(".footer")]
+    .filter(Boolean)
+    .forEach((el) => endObserver.observe(el));
+
+  fab.addEventListener("click", () => {
+    if (window.dataLayer) window.dataLayer.push({ event: "floating_cta_click" });
+  });
+}
 
 /* Refresh ScrollTrigger after fonts/layout settle */
 window.addEventListener("load", () => ScrollTrigger.refresh());
