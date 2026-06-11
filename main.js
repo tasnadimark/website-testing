@@ -123,6 +123,8 @@ const I18N = {
     "form.company": "Company",
     "form.message": "What should we automate?",
     "form.send": "Send message",
+    "form.sending": "Sending…",
+    "form.error": "Something went wrong. Please try again or email hello@otto.studio.",
     "form.successH": "Message sent.",
     "form.successP": "Thanks — we'll get back to you within one business day.",
     "footer.contact": "Contact",
@@ -231,6 +233,8 @@ const I18N = {
     "form.company": "Cég",
     "form.message": "Mit automatizáljunk?",
     "form.send": "Üzenet küldése",
+    "form.sending": "Küldés…",
+    "form.error": "Valami hiba történt. Próbáld újra, vagy írj a hello@otto.studio címre.",
     "form.successH": "Üzenet elküldve.",
     "form.successP": "Köszönjük — egy munkanapon belül válaszolunk.",
     "footer.contact": "Kapcsolat",
@@ -849,18 +853,83 @@ document.querySelectorAll(".faq__item").forEach((item) => {
 });
 
 /* ------------------------------------------------------------
-   Contact form (front-end only for now)
+   Contact form → Google Forms
+   Setup:
+   1. Create a Google Form with Name, Email, Company, Message fields
+   2. Link it to a Google Sheet (Responses tab)
+   3. Send → Get pre-filled link → fill each field → Generate link
+   4. Copy entry.xxxxx IDs from the URL into GOOGLE_FORM.entries below
+   5. Paste the formResponse URL (ends in /formResponse) into GOOGLE_FORM.action
 ------------------------------------------------------------ */
+const GOOGLE_FORM = {
+  action: "https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse",
+  entries: {
+    name: "entry.YOUR_NAME_FIELD",
+    email: "entry.YOUR_EMAIL_FIELD",
+    company: "entry.YOUR_COMPANY_FIELD",
+    message: "entry.YOUR_MESSAGE_FIELD",
+  },
+};
+
+function isGoogleFormConfigured() {
+  const { action, entries } = GOOGLE_FORM;
+  if (!action || action.includes("YOUR_FORM_ID")) return false;
+  return Object.values(entries).every((id) => id && !id.startsWith("entry.YOUR_"));
+}
+
+async function submitToGoogleForm(data) {
+  const body = new URLSearchParams();
+  body.set(GOOGLE_FORM.entries.name, data.name);
+  body.set(GOOGLE_FORM.entries.email, data.email);
+  if (data.company) body.set(GOOGLE_FORM.entries.company, data.company);
+  body.set(GOOGLE_FORM.entries.message, data.message);
+
+  await fetch(GOOGLE_FORM.action, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: body.toString(),
+  });
+}
+
 const contactForm = document.getElementById("contactForm");
 if (contactForm) {
-  contactForm.addEventListener("submit", (e) => {
+  const formError = document.getElementById("formError");
+  const formSuccess = document.getElementById("formSuccess");
+  const submitBtn = contactForm.querySelector('button[type="submit"]');
+  const submitLabel = submitBtn?.querySelector("[data-i18n='form.send']");
+
+  contactForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (contactForm.website.value) return; // honeypot — silently drop bots
-    // TODO: wire to a real backend (Formspree / own API) — payload is ready:
-    // const data = Object.fromEntries(new FormData(contactForm));
-    if (window.dataLayer) window.dataLayer.push({ event: "contact_form_submit" });
-    contactForm.hidden = true;
-    document.getElementById("formSuccess").hidden = false;
+    if (contactForm.website.value) return;
+
+    if (!isGoogleFormConfigured()) {
+      console.error("Google Form is not configured — update GOOGLE_FORM in main.js");
+      if (formError) formError.hidden = false;
+      return;
+    }
+
+    const data = Object.fromEntries(new FormData(contactForm));
+    formError.hidden = true;
+    submitBtn.disabled = true;
+    if (submitLabel) submitLabel.textContent = I18N[currentLang]["form.sending"];
+
+    try {
+      await submitToGoogleForm(data);
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          event: "contact_form_submit",
+          form_email: data.email,
+        });
+      }
+      contactForm.hidden = true;
+      formSuccess.hidden = false;
+    } catch (err) {
+      console.error("Form submit failed:", err);
+      formError.hidden = false;
+      submitBtn.disabled = false;
+      if (submitLabel) submitLabel.textContent = I18N[currentLang]["form.send"];
+    }
   });
 }
 
