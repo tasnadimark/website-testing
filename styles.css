@@ -175,6 +175,20 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .nav__links a:hover { color: var(--ink); }
 .nav__links a:hover::after { transform: scaleX(1); transform-origin: left; }
 .nav__right { display: flex; align-items: center; gap: 1rem; z-index: 1001; }
+.lang {
+  display: flex; align-items: center; gap: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 0.82rem; font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.lang__sep { color: var(--line); }
+.lang__btn {
+  color: var(--muted);
+  padding: 0.25rem 0.15rem;
+  transition: color 0.3s;
+}
+.lang__btn:hover { color: var(--ink); }
+.lang__btn.is-active { color: var(--accent); }
 .nav__burger {
   display: none;
   flex-direction: column; gap: 6px;
